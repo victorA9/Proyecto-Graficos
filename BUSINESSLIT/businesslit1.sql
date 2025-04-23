@@ -449,6 +449,23 @@ CREATE TABLE `yy` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `buy_orders'
+--
+-- TABLA CREADA PARA LAS MEJORAS DEL PROYECTO
+
+CREATE TABLE buy_orders (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    pdf_path VARCHAR (255),
+    total DECIMAL (10,2),
+    status ENUM('pendiente', 'firmada', 'rechazada'),
+    created_by INT,
+    created_at TIMESTAMP,
+    signed_at TIMESTAMP NULL
+);
+
 --
 -- Índices para tablas volcadas
 --
