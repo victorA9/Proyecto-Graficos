@@ -1,6 +1,5 @@
 <?php
 // savebuyorder-action.php
-session_start();
 
 // 1. Verificar autenticación y permisos
 if(!isset($_SESSION["user_id"])) {
@@ -10,8 +9,22 @@ if(!isset($_SESSION["user_id"])) {
 
 // 2. Procesar subida de PDF (único requisito)
 if(isset($_FILES["pdf_file"]) && $_FILES["pdf_file"]["error"] == 0) {
+    // 1. Definir ruta ABSOLUTA (más confiable)
+    $target_dir = __DIR__ . "/../../storage/orders/"; // __DIR__ = ruta actual del script
+
+// 2. Crear carpeta si no existe (con permisos)
+if (!file_exists($target_dir)) {
+    mkdir($target_dir, 0777, true); // 0777 = máximos permisos (solo desarrollo)
+    chmod($target_dir, 0777);       // Asegurar permisos
+}
+
+// 3. Verificar que sea escribible (opcional pero recomendado)
+if (!is_writable($target_dir)) {
+    error_log("Error: Carpeta no escribible - " . $target_dir);
+    header("Location: index.php?view=newbuyorder&error=folderperms");
+    exit;
+}
     // Configuración de upload
-    $target_dir = "storage/orders/";
     $pdf_name = "order_".time()."_".$_SESSION["user_id"].".pdf";
     $target_file = $target_dir . basename($pdf_name);
     
@@ -27,7 +40,15 @@ if(isset($_FILES["pdf_file"]) && $_FILES["pdf_file"]["error"] == 0) {
         // 3. Crear la orden (solo con PDF)
         $order = new BuyOrderData();
         $order->pdf_path = $target_file;
-        $order->total = 5.0; // se detecta automaticamente con el lector de pdfs
+        $total = BuyOrderData::extractTotalFromPDF($target_file);
+        
+        if($total <= 0) {
+            header("Location: index.php?view=newbuyorder&error=nototal");
+            exit;
+        }
+
+        $order = new BuyOrderData();
+        $order->total = $total;
         $order->created_by = $_SESSION["user_id"];
         $order_id = $order->add();
 

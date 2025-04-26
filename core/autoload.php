@@ -1,4 +1,6 @@
+
 <?php
+// Carga el autoloader de Composer (ruta relativa desde tu archivo)
 
 include "controller/Core.php";
 include "controller/View.php";
@@ -20,5 +22,3 @@ include "controller/class.phpmailer.php";
 include "controller/class.smtp.php";
 include "controller/class.pop3.php";
 
-
-?>
