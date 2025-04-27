@@ -7,13 +7,14 @@ class BuyOrderData {
 
 	public static $tablename = "buy_orders";
 
+	const STATUS_PENDING = "pendiente";
+	const STATUS_SIGNED = "firmada";
 
-	public function BuyOrderData(){
+	public function __construct(){
 		$this->pdf_path = "";
 		$this->total = 0.0;
-		$this->status = "pendiente";
+		$this->status = self::STATUS_PENDING;
 		$this->created_by = null;
-		$this->created_at = "NOW()";
         $this->signed_at = null;
 	}
 
@@ -43,8 +44,8 @@ class BuyOrderData {
 	}
 
 	public function add(){
-		$sql = "insert into ".self::$tablename." (pdf_path, total, created_by) ";
-		$sql .= "values (\"$this->pdf_path\", $this->total, $this->created_by)";
+		$sql = "insert into ".self::$tablename." (pdf_path, total, status, created_by) ";
+		$sql .= "values (\"$this->pdf_path\", $this->total, \"$this->status\", $this->created_by)";
 		Executor::doit($sql);
 
 		// Consulta separada para obtener el último ID
@@ -60,8 +61,8 @@ class BuyOrderData {
 	}
 
 	// partiendo de que ya tenemos creado un objecto BrandData previamente utilizamos el contexto
-	public function signOrder($id){
-		$sql = "update ".self::$tablename." set status=\"firmada\", signed_at=NOW() where id=$id";
+	public function signOrder($id, $userId){
+		$sql = "update ".self::$tablename." set status=\"".self::STATUS_SIGNED."\", signed_at=NOW(), signed_by=$userId where id=$id";
 		Executor::doit($sql);
 	}
 
