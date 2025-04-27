@@ -52,12 +52,22 @@
                                 <dt>Firmada el:</dt>
                                 <dd><?php echo date('d/m/Y H:i', strtotime($order->signed_at)); ?></dd>
                                 <?php endif; ?>
+
+                                <?php if($order->status == 'firmada'): ?>
+                                <dt>Firmada por:</dt>
+                                <dd>
+                                    <?php 
+                                        $signer = UserData::getById($order->signed_by); // Busca al usuario por el campo signed_by
+                                        echo htmlspecialchars($signer->name); // Muestra el nombre en lugar del ID
+                                    ?>
+                                </dd>
+                                <?php endif; ?>
                             </dl>
                         </div>
                         <div class="col-md-6">
                             <div class="text-center">
-                                <a href="<?php echo $order->pdf_path; ?>" target="_blank" class="btn btn-lg btn-danger">
-                                    <i class="fa fa-file-pdf-o"></i> Ver PDF Completo
+                            <a href="<?php echo 'http://localhost/BUSINESSLIT/core/storage/orders/' . basename($order->pdf_path); ?>" target="_blank" class="btn btn-lg btn-danger">
+                                <i class="fa fa-file-pdf-o"></i> Ver PDF Completo
                                 </a>
                             </div>
                         </div>
@@ -68,12 +78,6 @@
                         <div class="col-md-12">
                             <hr>
                             <div class="pull-right">
-                                <?php if($order->status == 'pendiente' && esAdmin()): ?>
-                                    <a href="index.php?action=signbuyorder&id=<?php echo $order->id; ?>" class="btn btn-success">
-                                        <i class="fa fa-check"></i> Firmar Orden
-                                    </a>
-                                <?php endif; ?>
-
                                 <a href="#" onclick="window.print()" class="btn btn-default">
                                     <i class="fa fa-print"></i> Imprimir
                                 </a>

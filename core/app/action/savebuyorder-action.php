@@ -46,8 +46,6 @@ if (!is_writable($target_dir)) {
             header("Location: index.php?view=newbuyorder&error=nototal");
             exit;
         }
-
-        $order = new BuyOrderData();
         $order->total = $total;
         $order->created_by = $_SESSION["user_id"];
         $order_id = $order->add();
