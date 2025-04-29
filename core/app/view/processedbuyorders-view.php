@@ -1,15 +1,14 @@
 <section class="content"> 
 <div class="row">
 	<div class="col-md-12">
-	<a href="./?view=newbuyorder" class="btn btn-default pull-right"><i class="fa fa-asterisk"></i> Nueva orden de compra</a>
-		<h1><i class='fa fa-square-o'></i> Ordenes de compra</h1>
+		<h1><i class='fa fa-square-o'></i> Ordenes de compra en proceso</h1>
 		<div class="clearfix"></div>
 
 
 <?php
 $orders=null;
 if(isset($_SESSION["user_id"])){
-    $orders = BuyOrderData::getByStatus(['pendiente', 'firmada']);
+    $orders = BuyOrderData::getByStatus('procesada');
 }
 
 if(count($orders)>0){
@@ -25,8 +24,8 @@ if(count($orders)>0){
 		<th>PDF</th>
 		<th>Estado</th>
 		<th>Total</th>
-		<th>Creada por</th>
-		<th>Fecha</th>
+		<th>Pago</th>
+		<th>Entrega</th>
         <th>Accion</th>
 	</thead>
 	<?php foreach($orders as $order):?>
@@ -58,31 +57,19 @@ if(count($orders)>0){
             <td>
                 <b><?php echo Core::$symbol . " " . number_format($order->total, 2, ".", ","); ?></b>
             </td>
-            <td>
-                <?php echo $order->getUser()->name; // Asume método getUser() ?>
-            </td>
-            <td><?php echo $order->created_at; ?></td>
+
+            <td><?php echo $order->payment_status; ?></td>
+
+            <td><?php echo $order->delivery_status; ?></td>
+
             <td style="width:150px;">
 
-            <?php if($order->status == 'pendiente' && Core::$user->kind == 1): ?>
-                <a href="#" class="btn btn-xs btn-success" data-toggle="modal" data-target="#pdfModal"
-                    data-id="<?php echo $order->id; ?>"
-                    data-pdf="<?php echo 'http://localhost/BUSINESSLIT/core/storage/orders/' . basename($order->pdf_path); ?>"
-                    data-status="<?php echo $order->status; ?>">
-                    <i class="fa fa-check"></i> Firmar
-                 </a>
-            <?php endif; ?>
+            
 
-            <?php if($order->status == 'firmada'): ?>
+            <?php if($order->payment_status == 'pendiente' || $order->delivery_status == 'pendiente'): ?>
                 <a href="index.php?view=processbuyorder&id=<?php echo $order->id; ?>" class="btn btn-xs btn-primary">
             <i class="fa fa-cogs"></i> Procesar
         </a>
-            <?php endif; ?>
-            
-            <?php if($order->status == 'pendiente'|| Core::$user->kind == 1): ?>
-                <a href="index.php?action=delbuyorder&id=<?php echo $order->id; ?>" class="btn btn-xs btn-danger">
-                    <i class="fa fa-trash"></i>
-                </a>
             <?php endif; ?>
             
             </td>
