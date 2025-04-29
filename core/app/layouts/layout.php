@@ -216,16 +216,14 @@ if( $q==0 ||  $q<=$product->inventary_min){
 
 
             <?php if(Core::$user->kind==1 || Core::$user->kind==2):?>
-            <li class="treeview <?php if(isset($_GET["view"]) && ($_GET["view"]=="res"||$_GET["view"]=="byreceive" ||$_GET["view"]=="topay"||$_GET["view"]=="rescancel"||$_GET["view"]=="onere")){ echo "active"; }?>">
+            <li class="treeview <?php if(isset($_GET["view"]) && ($_GET["view"]=="res"||$_GET["view"]=="buyorders" ||$_GET["view"]=="processedbuyorders")){ echo "active"; }?>">
               <a href="#"><i class='fa fa-clock-o'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
                <!-- Aqui se redirige a la nueva vista de compras (anteriormente redirigida a "re") -->
                 <li><a href="./?view=buyorders">Ordenes de compra</a></li>
-                <li><a href="./?view=res">Completadas</a></li>
                 <li><a href="./?view=processedbuyorders">En proceso</a></li>
-                <li><a href="./?view=byreceive">Por Recibir</a></li>
-          <li><a href="./?view=topay">Por Pagar</a></li>
-          <li><a href="./?view=rescancel">Compras canceladas</a></li>
+                <li><a href="./?view=res">Completadas</a></li>
+
               </ul>
             </li>
             <?php if(Core::$user->kind==1):?>
