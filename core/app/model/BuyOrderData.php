@@ -9,6 +9,14 @@ class BuyOrderData {
 
 	const STATUS_PENDING = "pendiente";
 	const STATUS_SIGNED = "firmada";
+	const STATUS_PROCESSED = "procesada";
+	const STATUS_COMPLETED = "completada";
+
+	const DELIVERY_PENDING = "pendiente";
+    const DELIVERY_DELIVERED = "entregado";
+
+    const PAYMENT_PENDING = "pendiente";
+    const PAYMENT_PAID = "pagado";
 
 	public function __construct(){
 		$this->pdf_path = "";
@@ -16,6 +24,8 @@ class BuyOrderData {
 		$this->status = self::STATUS_PENDING;
 		$this->created_by = null;
         $this->signed_at = null;
+		$this->delivery_status = self::DELIVERY_PENDING;
+		$this->payment_status = self::PAYMENT_PENDING;
 	}
 
 
@@ -60,9 +70,28 @@ class BuyOrderData {
 		Executor::doit($sql);
 	}
 
-	// partiendo de que ya tenemos creado un objecto BrandData previamente utilizamos el contexto
 	public function signOrder($id, $userId){
 		$sql = "update ".self::$tablename." set status=\"".self::STATUS_SIGNED."\", signed_at=NOW(), signed_by=$userId where id=$id";
+		Executor::doit($sql);
+	}
+
+	public function processOrder($id) {
+		$sql = "UPDATE ".self::$tablename." SET status=\"".self::STATUS_PROCESSED."\" WHERE id=$id";
+		Executor::doit($sql);
+	}
+
+	public function completeOrder($id) {
+		$sql = "UPDATE ".self::$tablename." SET status=\"".self::STATUS_COMPLETED."\" WHERE id=$id";
+		Executor::doit($sql);
+	}
+
+	public function updateDeliveryStatus($id, $status) {
+		$sql = "UPDATE " . self::$tablename . " SET delivery_status=\"$status\" WHERE id=$id";
+		Executor::doit($sql);
+	}
+
+	public function updatePaymentStatus($id, $status) {
+		$sql = "UPDATE " . self::$tablename . " SET payment_status=\"$status\" WHERE id=$id";
 		Executor::doit($sql);
 	}
 
@@ -70,6 +99,27 @@ class BuyOrderData {
 		$sql = "select * from ".self::$tablename;
 		$query = Executor::doit($sql);
 		return Model::many($query[0],new BuyOrderData());
+	}
+
+	public static function getByStatus($statuses) {
+		// Si $statuses no es un array, conviértelo en uno
+		if (!is_array($statuses)) {
+			$statuses = [$statuses];
+		}
+	
+		// Escapa los valores para evitar inyección SQL
+		$escapedStatuses = array_map(function($status) {
+			return '"' . addslashes($status) . '"';
+		}, $statuses);
+	
+		// Construye la cláusula IN
+		$statusList = implode(',', $escapedStatuses);
+	
+		// Construye la consulta
+		$sql = "SELECT * FROM " . self::$tablename . " WHERE status IN ($statusList)";
+		$query = Executor::doit($sql);
+	
+		return Model::many($query[0], new BuyOrderData());
 	}
 
 	public static function getById($id){

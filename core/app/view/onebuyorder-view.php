@@ -48,7 +48,7 @@
                                 <dt>Fecha creación:</dt>
                                 <dd><?php echo date('d/m/Y H:i', strtotime($order->created_at)); ?></dd>
 
-                                <?php if($order->status == 'firmada'): ?>
+                                <?php if($order->status == 'firmada' || $order->status == 'procesada'): ?>
                                 <dt>Firmada el:</dt>
                                 <dd><?php echo date('d/m/Y H:i', strtotime($order->signed_at)); ?></dd>
                                 <?php endif; ?>

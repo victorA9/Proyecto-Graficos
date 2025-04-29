@@ -222,7 +222,7 @@ if( $q==0 ||  $q<=$product->inventary_min){
                <!-- Aqui se redirige a la nueva vista de compras (anteriormente redirigida a "re") -->
                 <li><a href="./?view=buyorders">Ordenes de compra</a></li>
                 <li><a href="./?view=res">Completadas</a></li>
-                <li><a href="./?view=resprocess">En proceso</a></li>
+                <li><a href="./?view=processedbuyorders">En proceso</a></li>
                 <li><a href="./?view=byreceive">Por Recibir</a></li>
           <li><a href="./?view=topay">Por Pagar</a></li>
           <li><a href="./?view=rescancel">Compras canceladas</a></li>
