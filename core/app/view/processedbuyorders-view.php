@@ -140,7 +140,7 @@ if(count($orders)>0){
 } else {
 ?>
 <div class="jumbotron">
-    <h2>No hay órdenes de compra</h2>
+    <h2>No hay órdenes de compra en proceso</h2>
     <p>No se ha registrado ninguna orden.</p>
 </div>
 <?php
