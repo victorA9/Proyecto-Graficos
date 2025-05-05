@@ -216,16 +216,6 @@ if( $q==0 ||  $q<=$product->inventary_min){
 
 
             <?php if(Core::$user->kind==1 || Core::$user->kind==2):?>
-<<<<<<< HEAD
-            <li class="treeview <?php if(isset($_GET["view"]) && ($_GET["view"]=="res"||$_GET["view"]=="byreceive" ||$_GET["view"]=="topay"||$_GET["view"]=="rescancel"||$_GET["view"]=="onere")){ echo "active"; }?>">
-              <a href="#"><i class='fa fa-clock-o'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
-              <ul class="treeview-menu">
-                <li><a href="./?view=re">Nueva *</a></li>
-                <li><a href="./?view=res">Compras</a></li>
-                <li><a href="./?view=byreceive">Por Recibir</a></li>
-          <li><a href="./?view=topay">Por Pagar</a></li>
-          <li><a href="./?view=rescancel">Compras canceladas</a></li>
-=======
             <li class="treeview <?php if(isset($_GET["view"]) && ($_GET["view"]=="completedbuyorders"||$_GET["view"]=="buyorders" ||$_GET["view"]=="processedbuyorders")){ echo "active"; }?>">
               <a href="#"><i class='fa fa-clock-o'></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -234,7 +224,6 @@ if( $q==0 ||  $q<=$product->inventary_min){
                 <li><a href="./?view=processedbuyorders">En proceso</a></li>
                 <li><a href="./?view=completedbuyorders">Completadas</a></li>
 
->>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
               </ul>
             </li>
             <?php if(Core::$user->kind==1):?>

@@ -20,24 +20,14 @@ class Model {
 		return "core/app/model/".$modelname.".php";
 	}
 
-<<<<<<< HEAD
 	public static function many($query,$aclass){
-=======
-	public static function many($query, $aclass){
->>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
 		$cnt = 0;
 		$array = array();
 		while($r = $query->fetch_array()){
 			$array[$cnt] = new $aclass;
-<<<<<<< HEAD
 			$cnt2=1;
 			foreach ($r as $key => $v) {
 				if($cnt2>0 && $cnt2%2==0){ 
-=======
-			$cnt2 = 1;
-			foreach ($r as $key => $v) {
-				if ($cnt2 > 0 && $cnt2 % 2 == 0) { 
->>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
 					$array[$cnt]->$key = $v;
 				}
 				$cnt2++;
