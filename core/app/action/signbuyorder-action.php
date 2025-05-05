@@ -1,35 +1,84 @@
 <?php
+
 // filepath: c:\xampp\htdocs\BUSINESSLIT\core\app\action\signbuyorder-action.php
 
-// Asegúrate de que el ID de la orden esté presente en la solicitud
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $orderId = intval($_GET['id']); // Sanitiza el ID
-    $userId = $_SESSION['user_id']; // Obtén el ID del usuario actual
+require_once __DIR__ . '/../../../libs/fpdf/fpdf.php';
+require_once __DIR__ . '/../../../libs/FPDI-master/src/autoload.php';
+require_once __DIR__ . '/../model/BuyOrderData.php';
+require_once __DIR__ . '/../../../libs/pdfparser-master/pdfparser-autoload.php';
+use Smalot\PdfParser\Parser;
+use setasign\Fpdi\Fpdi;
 
-    // Obtén la orden de compra por su ID
+class PDFSigner {
+    private static $adminPrivateKey = "noc"; // Cambia esto por tu clave privada
+
+    public static function signPDF($pdfPath, $outputPath, $orderId) {
+        // Generar una cadena única basada en el contenido del PDF y la clave privada
+        $hash = hash('sha256', file_get_contents($pdfPath) . self::$adminPrivateKey . $orderId);
+        echo "Hash generado: $hash"; // Depuración
+        die(); // Detén la ejecución para verificar el hash
+    
+        // Crear una instancia de FPDI
+        $pdf = new Fpdi();
+        $pageCount = $pdf->setSourceFile($pdfPath);
+    
+        // Importar todas las páginas del PDF original
+        for ($i = 1; $i <= $pageCount; $i++) {
+            $templateId = $pdf->importPage($i);
+            $pdf->AddPage();
+            $pdf->useTemplate($templateId);
+        }
+    
+        // Agregar el sello con la cadena encriptada en la última página
+        $pdf->SetFont('Helvetica', '', 10);
+        $pdf->SetTextColor(255, 0, 0); // Color rojo para la firma
+        $pdf->SetXY(10, -15); // Posición en la parte inferior izquierda
+        $pdf->Write(10, "Firma: $hash");
+    
+        // Guardar el PDF firmado
+        $pdf->Output($outputPath, 'F');
+    }
+
+    public static function validatePDF($pdfPath, $orderId) {
+        // Crear una instancia del parser de PDF
+        $parser = new Parser();
+        $pdf = $parser->parseFile($pdfPath);
+
+        // Extraer el texto del PDF
+        $text = $pdf->getText();
+
+        // Generar el hash esperado
+        $expectedHash = hash('sha256', file_get_contents($pdfPath) . self::$adminPrivateKey . $orderId);
+
+        // Validar si el hash está presente en el texto del PDF
+        return strpos($text, "Firma: $expectedHash") !== false;
+    }
+}
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $orderId = intval($_GET['id']);
     $order = BuyOrderData::getById($orderId);
 
-    if ($order) {
-        // Verifica si la orden está en estado "pendiente"
-        if ($order->status === BuyOrderData::STATUS_PENDING) {
-            // Marca la orden como "firmada"
-            $order->signOrder($orderId, $userId);
+    if ($order && $order->pdf_path != "") {
+        $pdfPath = __DIR__ . "/../../storage/orders/" . basename($order->pdf_path);
 
-            // Redirige con un mensaje de éxito
-            print "<script>alert('La orden ha sido firmada exitosamente.');</script>";
-            print "<script>window.location='index.php?view=buyorders';</script>";
+        // Validar el PDF firmado
+        if (PDFSigner::validatePDF($pdfPath, $orderId)) {
+            // Cambiar el estado de la orden a "firmada"
+            $order->signOrder($orderId, $_SESSION['user_id']);
+            Core::alert("La orden ha sido validada y firmada exitosamente.");
         } else {
-            // Si la orden no está pendiente, muestra un mensaje de error
-            print "<script>alert('La orden no está en estado pendiente.');</script>";
-            print "<script>window.location='index.php?view=buyorders';</script>";
+            Core::alert("Error: La firma del PDF no es válida.");
         }
+
+        Core::redir("./?view=buyorders");
     } else {
-        // Si no se encuentra la orden, muestra un mensaje de error
-        print "<script>alert('Orden no encontrada.');</script>";
-        print "<script>window.location='index.php?view=buyorders';</script>";
+        Core::alert("Error: No se encontró el PDF de la orden.");
+        Core::redir("./?view=buyorders");
     }
 } else {
-    // Si no se proporciona un ID válido, redirige con un mensaje de error
-    print "<script>alert('ID de orden inválido.');</script>";
-    print "<script>window.location='index.php?view=buyorders';</script>";
+    Core::alert("Error: ID de orden inválido.");
+    Core::redir("./?view=buyorders");
 }
+
+?>
