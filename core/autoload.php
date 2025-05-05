@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+<?php
+=======
 
 <?php
 // Carga el autoloader de Composer (ruta relativa desde tu archivo)
+>>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
 
 include "controller/Core.php";
 include "controller/View.php";
@@ -22,3 +26,8 @@ include "controller/class.phpmailer.php";
 include "controller/class.smtp.php";
 include "controller/class.pop3.php";
 
+<<<<<<< HEAD
+
+?>
+=======
+>>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
