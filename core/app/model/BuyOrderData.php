@@ -53,6 +53,11 @@ class BuyOrderData {
 		}
 	}
 
+	public function updatePDFPath($newPath) {
+		$sql = "UPDATE " . self::$tablename . " SET pdf_path = \"$newPath\" WHERE id = $this->id";
+		Executor::doit($sql);
+	}
+
 	public function add(){
 		$sql = "insert into ".self::$tablename." (pdf_path, total, status, created_by) ";
 		$sql .= "values (\"$this->pdf_path\", $this->total, \"$this->status\", $this->created_by)";
