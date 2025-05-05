@@ -4,7 +4,15 @@ class SpendData {
 
 	public function SpendData(){
 		$this->name = "";
+<<<<<<< HEAD
+		$this->price_in = "";
+		$this->price_out = "";
+		$this->unit = "";
+		$this->user_id = "";
+		$this->presentation = "0";
+=======
 		$this->price = 0;
+>>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
 		$this->created_at = "NOW()";
 	}
 

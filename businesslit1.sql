@@ -449,6 +449,8 @@ CREATE TABLE `yy` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+<<<<<<< HEAD
+=======
 -- --------------------------------------------------------
 
 --
@@ -466,6 +468,7 @@ CREATE TABLE buy_orders (
     signed_at TIMESTAMP NULL
 );
 
+>>>>>>> 84363076d9f818cf8dd78b32db6cc5734582484e
 --
 -- Índices para tablas volcadas
 --
