@@ -44,7 +44,6 @@ class PDFSigner {
     
         // Extraer el texto del PDF
         $text = $pdf->getText();
-        echo "Texto extraído del PDF:\n$text"; // Depuración
     
         // Usar una expresión regular para extraer la firma
         if (preg_match('/Firma:\s*([a-f0-9]{64})/i', $text, $matches)) {
@@ -58,7 +57,6 @@ class PDFSigner {
         // Generar el hash esperado usando el archivo original
         $originalPdfPath = str_replace('signed_', '', $pdfPath); // Ruta del archivo original
         $expectedHash = hash('sha256', file_get_contents($originalPdfPath) . self::$adminPrivateKey . $orderId);
-        echo "Hash esperado: $expectedHash"; // Depuración
     
         // Validar si el hash extraído coincide con el hash esperado
         return $extractedHash === $expectedHash;
