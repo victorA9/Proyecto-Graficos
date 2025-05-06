@@ -48,7 +48,6 @@ class PDFSigner {
         // Usar una expresión regular para extraer la firma
         if (preg_match('/Firma:\s*([a-f0-9]{64})/i', $text, $matches)) {
             $extractedHash = trim($matches[1]); // La firma extraída
-            echo "Firma extraída: $extractedHash"; // Depuración
         } else {
             echo "No se encontró la firma en el PDF."; // Depuración
             return false;
